@@ -16,33 +16,56 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
-const courseSchema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// Define the Course schema
+const courseSchema = new Schema({
     title: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
     description: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
-    price: {
+    duration: {
         type: Number,
-        required: true,
-        min: 0
+        required: true
     },
-    instructor: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    createdAt: {
+    created_at: {
         type: Date,
         default: Date.now
     }
 });
 
-const Course = mongoose.model('Course', courseSchema);
+// Define the User schema
+const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    enrolledCourses: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Course'
+    }],
+    created_at: {
+        type: Date,
+        default: Date.now
+    }
+});
 
-module.exports = Course;
+// Create models from the schemas
+const Course = mongoose.model('Course', courseSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = { Course, User };
